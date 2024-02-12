@@ -1,6 +1,6 @@
 export class AuthController {
   register(req, res, next) {
-    res.send("Register User");
+    res.status(200).send("Register User");
   }
 
   login(req, res, next) {
