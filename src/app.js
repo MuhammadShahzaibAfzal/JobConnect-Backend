@@ -3,7 +3,7 @@ import authRouter from "./routes/authRoutes.js";
 import { globalErrorHandlerMiddleware } from "./middlewares/globalErrorHandler.js";
 
 export const app = express();
-
+app.use(express.json());
 // Register Router
 app.use("/api/auth", authRouter);
 
