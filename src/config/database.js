@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 import { DB_URL } from "./index.js";
+import { logger } from "./logger.js";
 
 export const connectDatabase = () => {
   mongoose
     .connect(DB_URL)
     .then(() => {
-      console.log("Database connected successfully 🚀🚀");
+      logger.log("info", "Database connected successfully 🚀🚀");
     })
     .catch((err) => {
-      console.log(
+      logger.log(
+        "error",
         `Something went wrong while connecting to database 😢😢: ${err}`
       );
     });
