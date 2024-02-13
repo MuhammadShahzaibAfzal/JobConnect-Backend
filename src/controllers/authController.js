@@ -1,7 +1,11 @@
+import { ErrorHandlerService } from "../services/ErrorHandlerService.js";
+
 class AuthController {
-  constructor(userService) {
+  constructor(userService, logger) {
     this.userService = userService;
+    this.logger = logger;
   }
+
   async register(req, res, next) {
     try {
       const user = await this.userService.create(req.body);
