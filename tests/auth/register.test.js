@@ -88,8 +88,12 @@ describe("POST api/auth/register", () => {
       await request(app).post("/api/auth/register").send(data);
       const users = await UserModel.find();
       const isMatch = await users[0].isPasswordCorrect(data.password);
+      // $2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa
+      // 60 charecter hash. $2b-> Algo $10 -> salt round
       //   Assert
+      expect(users[0].password).not.toBe(data.password);
       expect(users[0].password).toHaveLength(60);
+      expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
       expect(isMatch).toBe(true);
     });
   });
