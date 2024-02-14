@@ -75,7 +75,6 @@ describe("POST api/auth/register", () => {
       //   Assert
       expect(users[0].role).toBe("User");
     });
-
     it("Should hash password before save into database", async () => {
       // Arange
       const data = {
@@ -95,6 +94,21 @@ describe("POST api/auth/register", () => {
       expect(users[0].password).toHaveLength(60);
       expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
       expect(isMatch).toBe(true);
+    });
+    it("Should return 400 if email is already exists", async () => {
+      // Arrange
+      const data = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "johndoe@gmail.com",
+        password: "secret",
+      };
+      // save one record to test unique email
+      await UserModel.create(data);
+      //   Act
+      const result = await request(app).post("/api/auth/register").send(data);
+
+      expect(result.statusCode).toBe(409);
     });
   });
 });
