@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import { ErrorHandlerService } from "../services/ErrorHandlerService.js";
 
 class AuthController {
@@ -7,8 +8,13 @@ class AuthController {
 
   async register(req, res, next) {
     const { email } = req.body;
+    // REQUEST VALIDATION
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(422).json({ errors: result.array() });
+    }
     try {
-      // check email is already exists
+      // CHECK EMAIL IS AREADY EXISTS ?
       const isEmailExist = await this.userService.getUser({ email });
       if (isEmailExist) {
         return next(

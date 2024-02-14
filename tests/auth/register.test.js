@@ -27,9 +27,9 @@ describe("POST api/auth/register", () => {
         password: "secret",
       };
       //   Act
-      const result = await request(app).post("/api/auth/register").send(data);
+      const response = await request(app).post("/api/auth/register").send(data);
       //   Assert
-      expect(result.statusCode).toBe(201);
+      expect(response.statusCode).toBe(201);
     });
     it("Should return json response", async () => {
       // Arange
@@ -40,9 +40,9 @@ describe("POST api/auth/register", () => {
         password: "secret",
       };
       //   Act
-      const result = await request(app).post("/api/auth/register").send(data);
+      const response = await request(app).post("/api/auth/register").send(data);
       //   Assert
-      expect(result.headers["content-type"]).toMatch(/application\/json/);
+      expect(response.headers["content-type"]).toMatch(/application\/json/);
     });
     it("Should persist user data", async () => {
       // Arange
@@ -106,9 +106,78 @@ describe("POST api/auth/register", () => {
       // save one record to test unique email
       await UserModel.create(data);
       //   Act
-      const result = await request(app).post("/api/auth/register").send(data);
+      const response = await request(app).post("/api/auth/register").send(data);
 
-      expect(result.statusCode).toBe(409);
+      expect(response.statusCode).toBe(409);
+    });
+  });
+
+  describe("Feilds are missing", () => {
+    it("Should return 422 status code if email field is missing", async () => {
+      // Arange
+      const data = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "",
+        password: "secret",
+      };
+      //   Act
+      const response = await request(app).post("/api/auth/register").send(data);
+      // Asset
+      expect(response.statusCode).toBe(422);
+    });
+
+    it("Should return 422 status code if firstName field is missing", async () => {
+      // Arange
+      const data = {
+        lastName: "Doe",
+        email: "john@gmail.com",
+        password: "secret",
+      };
+      //   Act
+      const response = await request(app).post("/api/auth/register").send(data);
+      // Asset
+      expect(response.statusCode).toBe(422);
+    });
+
+    it("Should return 422 status code if lastName field is missing", async () => {
+      // Arange
+      const data = {
+        firstName: "Doe",
+        email: "john@gmail.com",
+        password: "secret",
+      };
+      //   Act
+      const response = await request(app).post("/api/auth/register").send(data);
+      // Asset
+      expect(response.statusCode).toBe(422);
+    });
+
+    it("Should return 422 status code if lastName field is missing", async () => {
+      // Arange
+      const data = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "john@gmail.com",
+      };
+      //   Act
+      const response = await request(app).post("/api/auth/register").send(data);
+      // Asset
+      expect(response.statusCode).toBe(422);
+    });
+
+    it("Should return 422 status code if firstName or lastName not contain alphabets.", async () => {
+      // Arange
+      const data = {
+        firstName: "John1",
+        lastName: "Doe2",
+        email: "john@gmail.com",
+        password: "secret",
+      };
+      //   Act
+      const response = await request(app).post("/api/auth/register").send(data);
+      // Asset
+      expect(response.statusCode).toBe(422);
     });
   });
 });

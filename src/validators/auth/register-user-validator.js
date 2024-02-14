@@ -1,34 +1,19 @@
-import { checkSchema } from "express-validator";
+import { body } from "express-validator";
 
-export default checkSchema({
-  email: {
-    trim: true,
-    errorMessage: "Email is required!",
-    notEmpty: true,
-    isEmail: {
-      errorMessage: "Email should be a valid email",
-    },
-  },
-  firstName: {
-    errorMessage: "First name is required!",
-    notEmpty: true,
-    trim: true,
-  },
-  lastName: {
-    errorMessage: "Last name is required!",
-    notEmpty: true,
-    trim: true,
-  },
-  password: {
-    trim: true,
-    errorMessage: "Password is required!",
-    notEmpty: true,
-    isLength: {
-      options: {
-        min: 8,
-      },
-      errorMessage: "Password length should be at least 8 chars!",
-    },
-  },
-});
+export default [
+  body("email", "Email is required")
+    .notEmpty()
+    .isEmail()
+    .withMessage("Email should be in proper format"),
+  body("firstName", "First Name is required")
+    .notEmpty()
+    .isAlpha()
+    .withMessage("First Name should be contains alphabet only"),
+  body("lastName", "Last Name is required")
+    .notEmpty()
+    .isAlpha()
+    .withMessage("Last Name should be contains alphabet only"),
+  body("password").notEmpty().withMessage("Password is required"),
+];
+
 // export default [body("email").notEmpty().withMessage("Email is required!")];
