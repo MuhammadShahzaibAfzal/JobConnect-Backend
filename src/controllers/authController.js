@@ -21,7 +21,24 @@ class AuthController {
           ErrorHandlerService.alreadyExistError("Email is already exist.")
         );
       }
+      // STORE USER INTO DATABASE
       const user = await this.userService.create(req.body);
+      // GENERATE ACCESS AND REFRESH TOKEN
+      const accessToken = "jdjdjadjd";
+      const refreshToken = "djdjajadjasdj";
+      // SET ACCESS AND REFRESH TOKEN INTO COOKIE
+      res.cookie("accessToken", accessToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60, // 1 hour
+        httpOnly: true,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+        httpOnly: true,
+      });
       return res.status(201).json({
         _id: user._id,
       });

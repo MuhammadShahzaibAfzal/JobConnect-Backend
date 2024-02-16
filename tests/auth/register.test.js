@@ -3,6 +3,7 @@ import { app } from "../../src/app.js";
 import { connectDatabase } from "../../src/config/database.js";
 import mongoose from "mongoose";
 import UserModel from "../../src/models/userModel.js";
+import { isJWT } from "../../src/utils/index.js";
 
 beforeAll(async () => {
   connectDatabase();
@@ -109,6 +110,35 @@ describe("POST api/auth/register", () => {
       const response = await request(app).post("/api/auth/register").send(data);
 
       expect(response.statusCode).toBe(409);
+    });
+
+    it("Should return the accessToken and refreshToken inside a cookie", async () => {
+      // Arrange
+      const data = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "johndoe@gmail.com",
+        password: "secret",
+      };
+      //   Act
+      const response = await request(app).post("/api/auth/register").send(data);
+      // Assert
+      let accessToken = null;
+      let refreshToken = null;
+      const cookies = response.headers["set-cookie"] || [];
+      cookies.forEach((cookie) => {
+        if (cookie.startsWith("accessToken=")) {
+          accessToken = cookie.split(";")[0].split("=")[1];
+        }
+        if (cookie.startsWith("refreshToken=")) {
+          refreshToken = cookie.split(";")[0].split("=")[1];
+        }
+      });
+      expect(accessToken).not.toBeNull();
+      expect(refreshToken).not.toBeNull();
+      // CHECK VALID ACCESS AND REFRESH TOKEN ALSO
+      expect(isJWT(accessToken)).toBeTruthy();
+      expect(isJWT(refreshToken)).toBeTruthy();
     });
   });
 
