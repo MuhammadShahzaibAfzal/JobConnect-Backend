@@ -134,6 +134,7 @@ describe("POST api/auth/register", () => {
           refreshToken = cookie.split(";")[0].split("=")[1];
         }
       });
+      // HAVE OR NOT TOKENS in COOKIE?
       expect(accessToken).not.toBeNull();
       expect(refreshToken).not.toBeNull();
       // CHECK VALID ACCESS AND REFRESH TOKEN ALSO

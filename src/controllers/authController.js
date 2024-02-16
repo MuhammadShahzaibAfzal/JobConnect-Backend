@@ -2,8 +2,9 @@ import { validationResult } from "express-validator";
 import { ErrorHandlerService } from "../services/ErrorHandlerService.js";
 
 class AuthController {
-  constructor(userService) {
+  constructor(userService, tokenService) {
     this.userService = userService;
+    this.tokenService = tokenService;
   }
 
   async register(req, res, next) {
@@ -23,9 +24,13 @@ class AuthController {
       }
       // STORE USER INTO DATABASE
       const user = await this.userService.create(req.body);
+      const payload = {
+        _id: user._id,
+        role: user.role,
+      };
       // GENERATE ACCESS AND REFRESH TOKEN
-      const accessToken = "jdjdjadjd";
-      const refreshToken = "djdjajadjasdj";
+      const accessToken = this.tokenService.generateAccessToken(payload);
+      const refreshToken = this.tokenService.generateRefreshToken(payload);
       // SET ACCESS AND REFRESH TOKEN INTO COOKIE
       res.cookie("accessToken", accessToken, {
         domain: "localhost",
