@@ -117,6 +117,15 @@ class AuthController {
       next(error);
     }
   }
+
+  async self(req, res, next) {
+    try {
+      const user = await this.userService.getUser({ _id: req.userID });
+      return res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default AuthController;

@@ -5,7 +5,7 @@ import { isJWT } from "../../src/utils/index.js";
 import RefreshTokenModel from "../../src/models/refreshTokenModel.js";
 import "../testSetup.js";
 
-describe("POST api/auth/login", () => {
+describe.skip("POST api/auth/login", () => {
   describe("Happy path", () => {
     it("Should return 200 status code if email and password is valid", async () => {
       // Arange

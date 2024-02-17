@@ -4,6 +4,7 @@ import UserService from "../services/UserService.js";
 import registerUserValidator from "../validators/auth/register-user-validator.js";
 import { TokenService } from "../services/TokenService.js";
 import loginUserValidator from "../validators/auth/login-user-validator.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const authRouter = Router();
 // Depedencies
@@ -18,6 +19,10 @@ authRouter.post("/register", registerUserValidator, (req, res, next) => {
 
 authRouter.post("/login", loginUserValidator, (req, res, next) => {
   authController.login(req, res, next);
+});
+
+authRouter.get("/self", authMiddleware, (req, res, next) => {
+  authController.self(req, res, next);
 });
 
 export default authRouter;

@@ -6,7 +6,7 @@ class UserService {
   }
 
   async getUser(filter) {
-    return await UserModel.findOne(filter);
+    return await UserModel.findOne(filter, "-__v -password");
   }
 }
 
