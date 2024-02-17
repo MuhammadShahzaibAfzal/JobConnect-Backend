@@ -13,9 +13,10 @@ export class TokenService {
     });
   }
 
-  generateRefreshToken(payload) {
+  generateRefreshToken(payload, jwtid) {
     return jwt.sign(payload, REFRESH_TOKEN_SECRET_KEY, {
       expiresIn: REFRESH_TOKEN_EXPIRY,
+      jwtid: String(jwtid),
     });
   }
 }

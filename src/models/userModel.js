@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import RefreshTokenModel from "./refreshTokenModel";
 
 const userSchema = new mongoose.Schema(
   {
@@ -47,6 +48,17 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.isPasswordCorrect = async function (rawPassword) {
   return await bcrypt.compare(rawPassword, this.password);
 };
+
+// Define a pre middleware to remove associated refresh tokens
+userSchema.pre("remove", async function (next) {
+  try {
+    // Remove all refresh tokens associated with this user
+    await RefreshTokenModel.deleteMany({ userID: this._id });
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 const UserModel = mongoose.model("User", userSchema);
 
