@@ -1,23 +1,9 @@
 import request from "supertest";
 import { app } from "../../src/app.js";
-import { connectDatabase } from "../../src/config/database.js";
-import mongoose from "mongoose";
 import UserModel from "../../src/models/userModel.js";
 import { isJWT } from "../../src/utils/index.js";
 import RefreshTokenModel from "../../src/models/refreshTokenModel.js";
-
-beforeAll(async () => {
-  connectDatabase();
-});
-
-beforeEach(async () => {
-  await UserModel.deleteMany();
-  await RefreshTokenModel.deleteMany();
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
+import "../testSetup.js";
 
 describe("POST api/auth/login", () => {
   describe("Happy path", () => {

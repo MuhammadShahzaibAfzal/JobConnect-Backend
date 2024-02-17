@@ -1,25 +1,11 @@
 import request from "supertest";
 import { app } from "../../src/app.js";
-import { connectDatabase } from "../../src/config/database.js";
-import mongoose from "mongoose";
 import UserModel from "../../src/models/userModel.js";
 import { isJWT } from "../../src/utils/index.js";
 import RefreshTokenModel from "../../src/models/refreshTokenModel.js";
+import "../testSetup.js";
 
-beforeAll(async () => {
-  connectDatabase();
-});
-
-beforeEach(async () => {
-  await UserModel.deleteMany();
-  await RefreshTokenModel.deleteMany();
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-describe.skip("POST api/auth/register", () => {
+describe("POST api/auth/register", () => {
   describe("Happy path", () => {
     it("Should return 201 status code", async () => {
       // Arange
