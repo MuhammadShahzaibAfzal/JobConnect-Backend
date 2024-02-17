@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import { ErrorHandlerService } from "../services/ErrorHandlerService.js";
+import UserModel from "../models/userModel.js";
 
 class AuthController {
   constructor(userService, tokenService) {
@@ -60,8 +61,61 @@ class AuthController {
     }
   }
 
-  login(req, res, next) {
-    res.send("Login User");
+  async login(req, res, next) {
+    const { email, password } = req.body;
+    /* REQUEST VALIDATION */
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    try {
+      // CHECK USER EXIST INTO DATABASE
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        return next(ErrorHandlerService.notFoundError("Email does not exist"));
+      }
+      // MATCH PASSWORD
+      const isMatch = await user.isPasswordCorrect(password);
+      if (!isMatch) {
+        return next(ErrorHandlerService.badRequestError("Invalid credentials"));
+      }
+      // GENERATE TOKENS
+      const payload = {
+        _id: user._id,
+        role: user.role,
+      };
+      // PERSIST REFRESH TOKEN INTO DATABASE
+      const newRefreshToken = await this.tokenService.persistRefreshToken(
+        user._id
+      );
+      // GENERATE ACCESS AND REFRESH TOKEN
+      const accessToken = this.tokenService.generateAccessToken(payload);
+      const refreshToken = this.tokenService.generateRefreshToken(
+        payload,
+        newRefreshToken._id
+      );
+
+      // SET ACCESS AND REFRESH TOKEN INTO COOKIE
+      res.cookie("accessToken", accessToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60, // 1 hour
+        httpOnly: true,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+        httpOnly: true,
+      });
+
+      res
+        .status(200)
+        .json({ message: "User is login successful", _id: user._id });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

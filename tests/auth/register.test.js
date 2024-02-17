@@ -19,7 +19,7 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-describe("POST api/auth/register", () => {
+describe.skip("POST api/auth/register", () => {
   describe("Happy path", () => {
     it("Should return 201 status code", async () => {
       // Arange

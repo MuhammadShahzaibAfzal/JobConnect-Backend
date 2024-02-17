@@ -7,7 +7,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node run src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon run src/server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll --verbose"
   },
   "keywords": [],
   "author": "",

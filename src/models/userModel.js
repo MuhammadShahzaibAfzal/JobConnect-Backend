@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import RefreshTokenModel from "./refreshTokenModel";
+import RefreshTokenModel from "./refreshTokenModel.js";
 
 const userSchema = new mongoose.Schema(
   {

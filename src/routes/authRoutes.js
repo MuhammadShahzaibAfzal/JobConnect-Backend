@@ -3,6 +3,7 @@ import AuthController from "../controllers/AuthController.js";
 import UserService from "../services/UserService.js";
 import registerUserValidator from "../validators/auth/register-user-validator.js";
 import { TokenService } from "../services/TokenService.js";
+import loginUserValidator from "../validators/auth/login-user-validator.js";
 
 const authRouter = Router();
 // Depedencies
@@ -14,6 +15,9 @@ const authController = new AuthController(userService, tokenService);
 authRouter.post("/register", registerUserValidator, (req, res, next) => {
   authController.register(req, res, next);
 });
-authRouter.post("/login", authController.login);
+
+authRouter.post("/login", loginUserValidator, (req, res, next) => {
+  authController.login(req, res, next);
+});
 
 export default authRouter;
