@@ -2,10 +2,9 @@ import { validationResult } from "express-validator";
 import { ErrorHandlerService } from "../services/ErrorHandlerService.js";
 
 class AuthController {
-  constructor(userService, tokenService, refreshTokenService) {
+  constructor(userService, tokenService) {
     this.userService = userService;
     this.tokenService = tokenService;
-    this.refreshTokenService = refreshTokenService;
   }
 
   async register(req, res, next) {
@@ -30,11 +29,9 @@ class AuthController {
         role: user.role,
       };
       // PERSIST REFRESH TOKEN INTO DATABASE
-      const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365; // leap year not considered
-      const newRefreshToken = await this.refreshTokenService.create({
-        userID: user._id,
-        expiresAt: Date.now() + MS_IN_YEAR,
-      });
+      const newRefreshToken = await this.tokenService.persistRefreshToken(
+        user._id
+      );
       // GENERATE ACCESS AND REFRESH TOKEN
       const accessToken = this.tokenService.generateAccessToken(payload);
       const refreshToken = this.tokenService.generateRefreshToken(

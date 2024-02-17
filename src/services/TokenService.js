@@ -5,6 +5,7 @@ import {
   REFRESH_TOKEN_EXPIRY,
   REFRESH_TOKEN_SECRET_KEY,
 } from "../config/index.js";
+import RefreshTokenModel from "../models/refreshTokenModel.js";
 
 export class TokenService {
   generateAccessToken(payload) {
@@ -17,6 +18,15 @@ export class TokenService {
     return jwt.sign(payload, REFRESH_TOKEN_SECRET_KEY, {
       expiresIn: REFRESH_TOKEN_EXPIRY,
       jwtid: String(jwtid),
+    });
+  }
+
+  async persistRefreshToken(userID) {
+    const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365; // leap year not considered
+
+    return await RefreshTokenModel.create({
+      userID,
+      expiresAt: Date.now() + MS_IN_YEAR,
     });
   }
 }
