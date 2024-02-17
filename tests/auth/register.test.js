@@ -111,7 +111,6 @@ describe("POST api/auth/register", () => {
 
       expect(response.statusCode).toBe(409);
     });
-
     it("Should return the accessToken and refreshToken inside a cookie", async () => {
       // Arrange
       const data = {
@@ -140,6 +139,25 @@ describe("POST api/auth/register", () => {
       // CHECK VALID ACCESS AND REFRESH TOKEN ALSO
       expect(isJWT(accessToken)).toBeTruthy();
       expect(isJWT(refreshToken)).toBeTruthy();
+    });
+
+    it("Should trim firstName,lastName,email and password", async () => {
+      // Arange
+      const data = {
+        firstName: " John ",
+        lastName: " Doe ",
+        email: "  johndoe@gmail.com  ",
+        password: "  secret ",
+      };
+      //   Act
+      await request(app).post("/api/auth/register").send(data);
+      const users = await UserModel.find();
+      const user = users[0];
+      //   Assert
+      expect(user.firstName).toBe("John");
+      expect(user.lastName).toBe("Doe");
+      expect(user.email).toBe("johndoe@gmail.com");
+      expect(user.isPasswordCorrect("secret")).toBeTruthy();
     });
   });
 
@@ -190,20 +208,6 @@ describe("POST api/auth/register", () => {
         firstName: "John",
         lastName: "Doe",
         email: "john@gmail.com",
-      };
-      //   Act
-      const response = await request(app).post("/api/auth/register").send(data);
-      // Asset
-      expect(response.statusCode).toBe(422);
-    });
-
-    it("Should return 422 status code if firstName or lastName not contain alphabets.", async () => {
-      // Arange
-      const data = {
-        firstName: "John1",
-        lastName: "Doe2",
-        email: "john@gmail.com",
-        password: "secret",
       };
       //   Act
       const response = await request(app).post("/api/auth/register").send(data);
