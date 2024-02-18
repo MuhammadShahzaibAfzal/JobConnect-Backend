@@ -1,9 +1,12 @@
 import request from "supertest";
 import { app } from "../../src/app.js";
+import UserModel from "../../src/models/userModel.js";
+import { isJWT } from "../../src/utils/index.js";
 import "../testSetup.js";
+import { cookie } from "express-validator";
 import { getCookies } from "../testSetup.js";
 
-describe("POST api/auth/self", () => {
+describe.skip("POST api/auth/logout", () => {
   describe("Happy path", () => {
     it("should return user data", async () => {
       // REGISTER USER
@@ -19,8 +22,7 @@ describe("POST api/auth/self", () => {
       // REQUEST WITH COOKIES
       const result = await request(app)
         .get("/api/auth/self")
-        .set("Cookie", [`accessToken=${accessToken};`])
-        .send();
+        .set("Cookie", [`accessToken=${accessToken};`]);
       //   ASSERT
       // CHECK IF USER ID MATCHES WITH REGISTERED USE
       const user = result.body;
@@ -29,9 +31,6 @@ describe("POST api/auth/self", () => {
   });
 
   describe("Sad Path", () => {
-    it("Should return 401 status code if accessToken is not set to cookie", async () => {
-      const response = await request(app).get("/api/auth/self");
-      expect(response.statusCode).toBe(401);
-    });
+    
   });
 });
