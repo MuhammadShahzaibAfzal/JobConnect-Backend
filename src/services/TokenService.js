@@ -29,4 +29,8 @@ export class TokenService {
       expiresAt: Date.now() + MS_IN_YEAR,
     });
   }
+
+  async deleteRefreshToken(tokenID) {
+    await RefreshTokenModel.findByIdAndDelete(tokenID);
+  }
 }

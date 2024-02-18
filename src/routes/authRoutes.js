@@ -5,6 +5,7 @@ import registerUserValidator from "../validators/auth/register-user-validator.js
 import { TokenService } from "../services/TokenService.js";
 import loginUserValidator from "../validators/auth/login-user-validator.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { validateRefreshToken } from "../middlewares/validateRefeshToken.js";
 
 const authRouter = Router();
 // Depedencies
@@ -23,6 +24,10 @@ authRouter.post("/login", loginUserValidator, (req, res, next) => {
 
 authRouter.get("/self", authMiddleware, (req, res, next) => {
   authController.self(req, res, next);
+});
+
+authRouter.get("/refresh-tokens", validateRefreshToken, (req, res, next) => {
+  authController.refreshTokens(req, res, next);
 });
 
 export default authRouter;

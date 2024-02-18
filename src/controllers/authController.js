@@ -126,6 +126,56 @@ class AuthController {
       next(error);
     }
   }
+
+  async refreshTokens(req, res, next) {
+    const { jti: tokenID, _id: userID } = req.data;
+    // CHECK USER EXIST
+    try {
+      const user = await this.userService.getUser({ _id: userID });
+      if (!user) {
+        return next(
+          ErrorHandlerService.badRequestError(
+            "User with the token could not found"
+          )
+        );
+      }
+
+      const payload = {
+        _id: user._id,
+        role: user.role,
+      };
+      // PERSIST REFRESH TOKEN INTO DATABASE
+      const newRefreshToken = await this.tokenService.persistRefreshToken(
+        user._id
+      );
+      // DELETE PREVIOUS REFRESH TOKEN
+      await this.tokenService.deleteRefreshToken(tokenID);
+      // GENERATE ACCESS AND REFRESH TOKEN
+      const accessToken = this.tokenService.generateAccessToken(payload);
+      const refreshToken = this.tokenService.generateRefreshToken(
+        payload,
+        newRefreshToken._id
+      );
+
+      // SET ACCESS AND REFRESH TOKEN INTO COOKIE
+      res.cookie("accessToken", accessToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60, // 1 hour
+        httpOnly: true,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+        httpOnly: true,
+      });
+
+      res.status(200).json({ message: "Tokens refresh successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default AuthController;

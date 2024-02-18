@@ -7,12 +7,12 @@ export const globalErrorHandlerMiddleware = (err, req, res, next) => {
   const message = isProduction ? "Internal server error" : err.message;
 
   // logging error
-  logger.log("error", err.message, {
-    statusCode,
-    error: err.stack,
-    path: req.path,
-    method: req.method,
-  });
+  // logger.log("error", err.message, {
+  //   statusCode,
+  //   error: err.stack,
+  //   path: req.path,
+  //   method: req.method,
+  // });
 
   let data = {
     errors: [

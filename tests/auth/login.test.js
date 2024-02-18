@@ -4,6 +4,7 @@ import UserModel from "../../src/models/userModel.js";
 import { isJWT } from "../../src/utils/index.js";
 import RefreshTokenModel from "../../src/models/refreshTokenModel.js";
 import "../testSetup.js";
+import { getCookies } from "../testSetup.js";
 
 describe.skip("POST api/auth/login", () => {
   describe("Happy path", () => {
@@ -58,17 +59,7 @@ describe.skip("POST api/auth/login", () => {
         password: data.password,
       });
       //   Assert
-      let accessToken = null;
-      let refreshToken = null;
-      const cookies = response.headers["set-cookie"] || [];
-      cookies.forEach((cookie) => {
-        if (cookie.startsWith("accessToken=")) {
-          accessToken = cookie.split(";")[0].split("=")[1];
-        }
-        if (cookie.startsWith("refreshToken=")) {
-          refreshToken = cookie.split(";")[0].split("=")[1];
-        }
-      });
+      const { accessToken, refreshToken } = getCookies(response);
       // HAVE OR NOT TOKENS in COOKIE?
       expect(accessToken).not.toBeNull();
       expect(refreshToken).not.toBeNull();
