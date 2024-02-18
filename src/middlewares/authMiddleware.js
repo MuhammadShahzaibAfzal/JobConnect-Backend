@@ -10,8 +10,9 @@ export const authMiddleware = async (req, res, next) => {
     );
   }
   try {
-    const { _id } = jwt.verify(accessToken, ACCESS_TOEKN_SECRET_KEY);
+    const { _id, jti } = jwt.verify(accessToken, ACCESS_TOEKN_SECRET_KEY);
     req.userID = _id;
+    req.jti = jti;
     next();
   } catch (error) {
     next(

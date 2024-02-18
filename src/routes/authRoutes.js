@@ -30,4 +30,8 @@ authRouter.get("/refresh-tokens", validateRefreshToken, (req, res, next) => {
   authController.refreshTokens(req, res, next);
 });
 
+authRouter.get("/logout", authMiddleware, (req, res, next) => {
+  authController.logout(req, res, next);
+});
+
 export default authRouter;

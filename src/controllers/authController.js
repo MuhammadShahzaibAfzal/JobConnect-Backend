@@ -176,6 +176,18 @@ class AuthController {
       next(error);
     }
   }
+
+  async logout(req, res, next) {
+    const jti = req.jti;
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    try {
+      await this.tokenService.deleteRefreshToken(jti);
+    } catch (error) {
+      next(error);
+    }
+    res.status(200).json({ isAuth: false });
+  }
 }
 
 export default AuthController;

@@ -1,15 +1,12 @@
 import request from "supertest";
 import { app } from "../../src/app.js";
-import UserModel from "../../src/models/userModel.js";
-import { isJWT } from "../../src/utils/index.js";
 import "../testSetup.js";
-import { cookie } from "express-validator";
 import { getCookies } from "../testSetup.js";
 
-describe.skip("POST api/auth/logout", () => {
+describe("POST api/auth/logout", () => {
   describe("Happy path", () => {
-    it("should return user data", async () => {
-      // REGISTER USER
+    it("Should remove cookies if user is login", async () => {
+      // Arragnge
       const data = {
         firstName: "John",
         lastName: "Doe",
@@ -17,20 +14,24 @@ describe.skip("POST api/auth/logout", () => {
         password: "secret",
       };
       const response = await request(app).post("/api/auth/register").send(data);
-      //   CHECK COOKIE AND SET WITH REQUEST
       const { accessToken } = getCookies(response);
-      // REQUEST WITH COOKIES
+      // ACT
       const result = await request(app)
-        .get("/api/auth/self")
-        .set("Cookie", [`accessToken=${accessToken};`]);
-      //   ASSERT
-      // CHECK IF USER ID MATCHES WITH REGISTERED USE
-      const user = result.body;
-      expect(user._id).toBe(response.body._id);
+        .get("/api/auth/logout")
+        .set("Cookie", [`accessToken=${accessToken};`])
+        .send();
+
+      // ASSERT
+      const { accessToken: access_token, refreshToken } = getCookies(result);
+      expect(access_token).toBe("");
+      expect(refreshToken).toBe("");
     });
   });
 
   describe("Sad Path", () => {
-    
+    it("Should return 401 status code if user is not login", async () => {
+      const response = await request(app).get("/api/auth/logout").send();
+      expect(response.statusCode).toBe(401);
+    });
   });
 });

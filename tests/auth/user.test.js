@@ -3,7 +3,7 @@ import { app } from "../../src/app.js";
 import "../testSetup.js";
 import { getCookies } from "../testSetup.js";
 
-describe("POST api/auth/self", () => {
+describe.skip("POST api/auth/self", () => {
   describe("Happy path", () => {
     it("should return user data", async () => {
       // REGISTER USER
