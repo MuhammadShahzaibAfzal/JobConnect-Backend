@@ -5,7 +5,7 @@ class UserService {
     return await UserModel.create(data);
   }
 
-  async getUser(filter, projection) {
+  async getUser(filter, projection = "-__v") {
     return await UserModel.findOne(filter, projection);
   }
 

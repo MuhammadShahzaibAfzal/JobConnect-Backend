@@ -7,6 +7,8 @@ import loginUserValidator from "../validators/auth/login-user-validator.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { validateRefreshToken } from "../middlewares/validateRefeshToken.js";
 import changePasswordValidator from "../validators/auth/change-password-validator.js";
+import forgetPasswordValidator from "../validators/auth/forget-password-validator.js";
+import resetPasswordValidator from "../validators/auth/reset-password-validator.js";
 
 const authRouter = Router();
 // Depedencies
@@ -43,5 +45,17 @@ authRouter.post(
     authController.changePassword(req, res, next);
   }
 );
+
+authRouter.post(
+  "/forget-password",
+  forgetPasswordValidator,
+  (req, res, next) => {
+    authController.forgetPassword(req, res, next);
+  }
+);
+
+authRouter.post("/reset-password", resetPasswordValidator, (req, res, next) => {
+  authController.resetPassword(req, res, next);
+});
 
 export default authRouter;

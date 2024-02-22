@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import {
   ACCESS_TOEKN_SECRET_KEY,
   ACCESS_TOKEN_EXPIRY,
+  PASSWORD_RESET_TOKEN_EXPIRY,
+  PASSWORD_RESET_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRY,
   REFRESH_TOKEN_SECRET_KEY,
 } from "../config/index.js";
@@ -32,5 +34,15 @@ export class TokenService {
 
   async deleteRefreshToken(tokenID) {
     await RefreshTokenModel.findByIdAndDelete(tokenID);
+  }
+
+  async generatePasswordResetToken(payload) {
+    return jwt.sign(payload, PASSWORD_RESET_TOKEN_SECRET, {
+      expiresIn: PASSWORD_RESET_TOKEN_EXPIRY,
+    });
+  }
+
+  async verifyPasswordResetToken(token) {
+    return jwt.verify(token, PASSWORD_RESET_TOKEN_SECRET);
   }
 }

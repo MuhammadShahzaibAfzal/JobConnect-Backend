@@ -4,7 +4,7 @@ import "../testSetup.js";
 import { getCookies } from "../testSetup.js";
 import UserModel from "../../src/models/userModel.js";
 
-describe("POST api/auth/logout", () => {
+describe("POST api/auth/change-password", () => {
   describe("Happy path", () => {
     it("Should change password", async () => {
       // Arragnge

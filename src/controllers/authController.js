@@ -227,6 +227,70 @@ class AuthController {
       next(error);
     }
   }
+
+  async forgetPassword(req, res, next) {
+    const { email } = req.body;
+    // VALIDATE REQUEST
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    try {
+      // CHECK USER EXIST OF THAT EMAIL
+      const user = await this.userService.getUser({ email });
+      if (!user) {
+        return next(ErrorHandlerService.notFoundError("User not found."));
+      }
+      // GENERATE PASSWORD RESET TOKEN LINK
+      const passwordResetToken =
+        await this.tokenService.generatePasswordResetToken({ _id: user._id });
+      // SEND MAIL
+      console.log("====================================");
+      console.log(
+        `Your password link is http://localhost:5173/password-reset/${passwordResetToken}`
+      );
+      console.log("====================================");
+      return res.status(200).json({
+        message: `Your password link is http://localhost:5173/password-reset/${passwordResetToken}`,
+        resetPasswordToken: passwordResetToken,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async resetPassword(req, res, next) {
+    const { resetPasswordToken, newPassword } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    // VERIFY PASSWORAD TOKEN
+    let payload;
+    try {
+      payload = await this.tokenService.verifyPasswordResetToken(
+        resetPasswordToken
+      );
+    } catch (error) {
+      return next(
+        ErrorHandlerService.badRequestError(
+          "Invalid or expire password reset token."
+        )
+      );
+    }
+    // CHANGE PASSWORD
+    try {
+      const user = await this.userService.getUser({ _id: payload._id });
+      user.password = newPassword;
+      await user.save();
+      return res
+        .status(200)
+        .json({ message: "Password changed successfully." });
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 export default AuthController;
