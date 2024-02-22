@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET_KEY } from "../../src/config/index.js";
 import { getCookies } from "../testSetup.js";
 
-describe.skip("POST api/auth/refresh-tokens", () => {
+describe.skip("GET api/auth/refresh-tokens", () => {
   describe("Happy path", () => {
     // it("Should return new access token and refresh tokens", async () => {
     //   // ARRAGE

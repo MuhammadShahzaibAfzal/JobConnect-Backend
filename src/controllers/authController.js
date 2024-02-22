@@ -120,7 +120,10 @@ class AuthController {
 
   async self(req, res, next) {
     try {
-      const user = await this.userService.getUser({ _id: req.userID });
+      const user = await this.userService.getUser(
+        { _id: req.userID },
+        "-_id -__v"
+      );
       return res.status(200).json(user);
     } catch (error) {
       next(error);
@@ -187,6 +190,42 @@ class AuthController {
       next(error);
     }
     res.status(200).json({ isAuth: false });
+  }
+
+  async changePassword(req, res, next) {
+    const { currentPassword, newPassword } = req.body;
+    if (currentPassword == newPassword) {
+      return next(
+        ErrorHandlerService.badRequestError("Current and New password is same")
+      );
+    }
+    // REQUEST VALIDATION
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      // CHECK USER EXISTS OR NOT ?
+      const user = await this.userService.getUser({ _id: req.userID });
+      if (!user) {
+        return next(ErrorHandlerService.notFoundError("User not found."));
+      }
+      // CHECK CURRENT PASSWORD
+      const isMatch = await user.isPasswordCorrect(currentPassword);
+      if (!isMatch) {
+        return next(
+          ErrorHandlerService.badRequestError("Current password is incorrect")
+        );
+      }
+      // CHANGE PASSWORD
+      user.password = newPassword;
+      await user.save();
+      return res
+        .status(200)
+        .json({ message: "Password Changed successfully." });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

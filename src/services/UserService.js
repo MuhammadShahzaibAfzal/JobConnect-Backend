@@ -5,8 +5,12 @@ class UserService {
     return await UserModel.create(data);
   }
 
-  async getUser(filter) {
-    return await UserModel.findOne(filter, "-__v -password");
+  async getUser(filter, projection) {
+    return await UserModel.findOne(filter, projection);
+  }
+
+  async updateUser(_id, data) {
+    return await UserModel.findByIdAndUpdate(_id, data);
   }
 }
 

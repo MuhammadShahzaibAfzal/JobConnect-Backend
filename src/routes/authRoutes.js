@@ -6,6 +6,7 @@ import { TokenService } from "../services/TokenService.js";
 import loginUserValidator from "../validators/auth/login-user-validator.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { validateRefreshToken } from "../middlewares/validateRefeshToken.js";
+import changePasswordValidator from "../validators/auth/change-password-validator.js";
 
 const authRouter = Router();
 // Depedencies
@@ -33,5 +34,14 @@ authRouter.get("/refresh-tokens", validateRefreshToken, (req, res, next) => {
 authRouter.get("/logout", authMiddleware, (req, res, next) => {
   authController.logout(req, res, next);
 });
+
+authRouter.post(
+  "/change-password",
+  authMiddleware,
+  changePasswordValidator,
+  (req, res, next) => {
+    authController.changePassword(req, res, next);
+  }
+);
 
 export default authRouter;
