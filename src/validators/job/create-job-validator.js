@@ -43,7 +43,7 @@ export default [
 
   body("description")
     .notEmpty()
-    .withMessage("Description is   required")
+    .withMessage("Description is required")
     .escape(),
 
   body("location").optional().trim().escape(),
@@ -61,9 +61,9 @@ export default [
     .isDate()
     .escape(),
 
-  body("campanyName")
+  body("companyName")
     .notEmpty()
-    .withMessage("Description is   required")
+    .withMessage("Company name is required")
     .escape(),
 
   body("companyWebsite").optional().trim(),
