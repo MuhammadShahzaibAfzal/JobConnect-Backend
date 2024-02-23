@@ -59,7 +59,10 @@ const jobSchema = new mongoose.Schema(
     comapanyWebsite: {
       type: String,
     },
-    expirationDate: Date,
+    expirationDate: {
+      type: Date,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["active", "filled", "expired", "paused"],
