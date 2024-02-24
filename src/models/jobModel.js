@@ -52,11 +52,11 @@ const jobSchema = new mongoose.Schema(
     responsibilites: {
       type: String,
     },
-    comapanyName: {
+    companyName: {
       type: String,
       required: true,
     },
-    comapanyWebsite: {
+    companyWebsite: {
       type: String,
     },
     expirationDate: {

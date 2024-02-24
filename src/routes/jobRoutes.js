@@ -1,12 +1,15 @@
 import { Router } from "express";
 import { JobController } from "../controllers/JobController.js";
-import createJobValidator from "../validators/job/create-job-validator.js";
+import { jobValidationRules } from "../validators/job/create-job-validator.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { JobService } from "../services/JobService.js";
 
 const jobRouter = Router();
-const jobController = new JobController();
+const jobService = new JobService();
 
-jobRouter.post("/", authMiddleware, createJobValidator, (req, res, next) => {
+const jobController = new JobController(jobService);
+
+jobRouter.post("/", authMiddleware, jobValidationRules(), (req, res, next) => {
   jobController.createNewJob(req, res, next);
 });
 
