@@ -22,4 +22,20 @@ jobRouter.get("/latests", (req, res, next) => {
   jobController.getLatestJobs(req, res, next);
 });
 
+jobRouter.get("/popular-categories", (req, res, next) => {
+  jobController.getPopularCategories(req, res, next);
+});
+
+jobRouter.get("/:_id", (req, res, next) => {
+  jobController.getJob(req, res, next);
+});
+
+jobRouter.put("/:_id", authMiddleware, (req, res, next) => {
+  jobController.updateJob(req, res, next);
+});
+
+jobRouter.get("/my/jobs", authMiddleware, listJobRules(), (req, res, next) => {
+  jobController.getMyJobs(req, res, next);
+});
+
 export default jobRouter;
