@@ -18,4 +18,8 @@ jobRouter.get("/", listJobRules(), (req, res, next) => {
   jobController.getJobs(req, res, next);
 });
 
+jobRouter.get("/latests", (req, res, next) => {
+  jobController.getLatestJobs(req, res, next);
+});
+
 export default jobRouter;

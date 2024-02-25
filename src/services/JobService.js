@@ -17,4 +17,8 @@ export class JobService {
       count,
     };
   }
+
+  async getLatest() {
+    return await JobModel.find().sort({ createdAt: -1 }).limit(8);
+  }
 }

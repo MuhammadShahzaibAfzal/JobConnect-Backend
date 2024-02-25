@@ -30,10 +30,19 @@ export class JobController {
         data: jobs,
         currentPage: validatedQuery.currentPage,
         perPage: validatedQuery.perPage,
-        count,
+        total: count,
       });
     } catch (error) {
       return next(error);
+    }
+  }
+
+  async getLatestJobs(req, res, next) {
+    try {
+      const latestJobs = await this.jobService.getLatest();
+      res.status(200).json({ latestJobs });
+    } catch (error) {
+      next(error);
     }
   }
 }
